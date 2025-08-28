@@ -1,26 +1,19 @@
-// /app/api/users/route.ts (or .js)
-import { cookies } from "next/headers";
+// /app/api/auth/login/route.js
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function GET() {
-  try {
-    const token = cookies().get("auth")?.value || "";
-    const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      
-    });
+  const cookieStore = cookies();
+  const authCookie = cookieStore.get("auth"); // { name, value } or undefined
 
-    const data = await r.json();
-    // Normalize error passthrough
-    return NextResponse.json(data, { status: r.status });
-  } catch (err) {
-    return NextResponse.json(
-      { success: false, message: "Failed to fetch users" },
-      { status: 500 }
-    );
-  }
+  const r = await fetch(process.env.NEXT_PUBLIC_API_URL + "/users", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      ...(authCookie?.value ? { Authorization: `Bearer ${authCookie.value}`} : {}),
+    },
+  });
+
+  const data = await r.json();
+  return NextResponse.json(data);
 }
