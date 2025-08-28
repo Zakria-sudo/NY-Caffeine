@@ -242,7 +242,7 @@ export default function CustomersOverview() {
         )}
 
         {/* DESKTOP (≥sm): table */}
-        <div className="hidden sm:block">
+        <div className="hidden sm:block border mx-5 rounded-xl">
           <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
             <thead>
               <tr className="bg-gray-50 text-left text-sm text-gray-500">

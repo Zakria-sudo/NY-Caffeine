@@ -40,7 +40,7 @@ export default function TablePagination({
     "border-neutral-200 bg-white text-neutral-900 font-medium";
 
   return (
-    <div className="border-t border-neutral-200 px-4 py-3">
+    <div className=" border-neutral-200 px-4 py-3">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         {/* Previous */}
         <button
