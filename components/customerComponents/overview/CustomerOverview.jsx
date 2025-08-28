@@ -159,7 +159,7 @@ export default function CustomersOverview() {
                   setSearch(e.target.value);
                   setPage(1);
                 }}
-                placeholder="Search name / email / phone"
+                placeholder="Search name"
                 className="w-full rounded-lg border border-gray-200 bg-white pl-9 pr-3 py-3 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none"
               />
             </div>

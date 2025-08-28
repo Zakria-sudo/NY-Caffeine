@@ -14,14 +14,12 @@ const PAGE_SIZE = 10;
 export default function Items() {
   const router = useRouter();
 
-  // state
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  // fetch items
   useEffect(() => {
     (async () => {
       try {
@@ -29,8 +27,6 @@ export default function Items() {
         setErr("");
         const res = await api.get("/items");
         const data = Array.isArray(res.data?.items) ? res.data.items : res.data;
-        console.log(res.data.items);
-        
         setItems(Array.isArray(data) ? data : []);
       } catch (e) {
         setErr(e?.response?.data?.message || "Failed to load items");
@@ -45,47 +41,38 @@ export default function Items() {
   if (search.trim()) {
     const term = search.trim().toLowerCase();
     filtered = filtered.filter((i) =>
-      String(i?.name ?? "")
-        .toLowerCase()
-        .includes(term)
+      String(i?.name ?? "").toLowerCase().includes(term)
     );
   }
 
   // pagination
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageSafe = Math.min(page, totalPages);
-  const current = filtered.slice(
-    (pageSafe - 1) * PAGE_SIZE,
-    pageSafe * PAGE_SIZE
-  );
+  const current = filtered.slice((pageSafe - 1) * PAGE_SIZE, pageSafe * PAGE_SIZE);
 
   return (
     <section className="mx-3 rounded-md bg-white p-3 md:p-6">
       {/* Title */}
-      <div className="mb-4 flex items-center justify-between md:mb-5">
+      <div className="mb-4 flex flex-col gap-3 md:mb-5 md:flex-row md:items-center md:justify-between">
         <h2 className="text-[20px] font-semibold text-[#111827] md:text-[22px]">
           All Items
         </h2>
         <button
           type="button"
-          className="inline-flex items-center gap-2 rounded-lg bg-[#7a4500] px-3.5 py-2.5 text-[14px] font-medium text-white shadow-sm hover:opacity-95"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#7a4500] px-3.5 py-2.5 text-[14px] font-medium text-white shadow-sm hover:opacity-95 md:w-auto"
           onClick={() => router.push("/menu/add-item")}
         >
           <span className="inline-flex">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 5v14M5 12h14"
-                stroke="currentColor"
-                strokeWidth="2"
-              />
+              <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" />
             </svg>
           </span>
           Add New Item
         </button>
       </div>
 
-      {/* Search */}
-      <div className="mb-4 flex justify-between">
+      {/* Search / Filters */}
+      <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center gap-2">
           <FilterButton label="By Date" />
           <FilterButton label="By Category" />
@@ -112,66 +99,73 @@ export default function Items() {
       {err && <div className="mb-3 text-sm text-red-600">{err}</div>}
 
       {/* Table */}
-      <div className="rounded-xl border border-gray-200 bg-white overflow-x-auto">
-  <table className="w-full min-w-[980px] border-collapse text-sm">
-    <thead className="bg-[#f7f7f9] text-[#111827]">
-      <tr className="text-[13px]">
-        <Th>Name</Th>
-        <Th className="w-[120px]">Price</Th>
-        <Th className="w-[160px]">Category</Th>
-        <Th>Modifier(s)</Th>
-        <Th className="w-[80px] text-center">Qty</Th>
-        <Th className="w-[140px]">In Stock</Th>
-        <Th className="w-[120px] text-center" />
-      </tr>
-    </thead>
-
-    {loading ? (
-      <tbody>
-      <SkeletonTable rows={5} />
-      </tbody>
-    ) : (
-      <tbody>
-        {current.length === 0 ? (
-          <tr>
-            <Td colSpan={7} className="py-10 text-center text-gray-500">
-              No items found.
-            </Td>
-          </tr>
-        ) : (
-          current.map((r) => (
-            <tr key={r._id || r.name} className="border-t border-gray-200 text-[14px] text-[#111827]">
-              <Td>{r?.name ?? "-"}</Td>
-              <Td className="text-gray-700">
-                {typeof r?.price === "number"
-                  ? r.price.toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                      minimumFractionDigits: 2,
-                    })
-                  : "-"}
-              </Td>
-              <Td className="text-gray-700">
-                {typeof r?.category === "string" ? r.category : r?.category?.name || "-"}
-              </Td>
-              <Td>{renderModifiers(r?.modifiers)}</Td>
-              <Td className="text-center text-gray-700">{r?.qty ?? 0}</Td>
-              <Td><StatusBadge status={r?.isActive ? "active" : "inactive"} /></Td>
-              <Td>
-                <div className="flex items-center justify-center gap-7">
-                  {pen}
-                  {trash}
-                </div>
-              </Td>
+      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+        <table className="w-full min-w-[980px] border-collapse text-sm">
+          <thead className="bg-[#f7f7f9] text-[#111827]">
+            <tr className="text-[13px]">
+              <Th>Name</Th>
+              <Th className="w-[120px]">Price</Th>
+              <Th className="w-[160px]">Category</Th>
+              <Th>Modifier(s)</Th>
+              <Th className="w-[80px] text-center">Qty</Th>
+              <Th className="w-[140px]">In Stock</Th>
+              <Th className="w-[120px] text-center" />
             </tr>
-          ))
-        )}
-      </tbody>
-    )}
-  </table>
+          </thead>
 
-  {loading ? <SkeletonPagination/> : <TablePagination/>}
-  </div>
+          {loading ? (
+            <tbody>
+              <SkeletonTable rows={5} />
+            </tbody>
+          ) : (
+            <tbody>
+              {current.length === 0 ? (
+                <tr>
+                  <Td colSpan={7} className="py-10 text-center text-gray-500">
+                    No items found.
+                  </Td>
+                </tr>
+              ) : (
+                current.map((r) => (
+                  <tr
+                    key={r._id || r.name}
+                    className="border-t border-gray-200 text-[14px] text-[#111827]"
+                  >
+                    <Td>{r?.name ?? "-"}</Td>
+                    <Td className="text-gray-700">
+                      {typeof r?.price === "number"
+                        ? r.price.toLocaleString("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                            minimumFractionDigits: 2,
+                          })
+                        : "-"}
+                    </Td>
+                    <Td className="text-gray-700">
+                      {typeof r?.category === "string"
+                        ? r.category
+                        : r?.category?.name || "-"}
+                    </Td>
+                    <Td>{renderModifiers(r?.modifiers)}</Td>
+                    <Td className="text-center text-gray-700">{r?.qty ?? 0}</Td>
+                    <Td>
+                      <StatusBadge status={r?.isActive ? "active" : "inactive"} />
+                    </Td>
+                    <Td>
+                      <div className="flex items-center justify-center gap-7">
+                        {pen}
+                        {trash}
+                      </div>
+                    </Td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          )}
+        </table>
+
+        {loading ? <SkeletonPagination /> : <TablePagination />}
+      </div>
     </section>
   );
 }
@@ -179,11 +173,7 @@ export default function Items() {
 /* helpers */
 
 function Th({ children, className = "" }) {
-  return (
-    <th className={`px-4 py-2 text-left font-medium ${className}`}>
-      {children}
-    </th>
-  );
+  return <th className={`px-4 py-2 text-left font-medium ${className}`}>{children}</th>;
 }
 
 function Td({ children, className = "" }) {
@@ -210,11 +200,7 @@ function StatusBadge({ status }) {
   const active = status === "active";
   return (
     <span className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-[12px] text-gray-700">
-      <span
-        className={`h-2 w-2 rounded-full ${
-          active ? "bg-emerald-500" : "bg-red-500"
-        }`}
-      />
+      <span className={`h-2 w-2 rounded-full ${active ? "bg-emerald-500" : "bg-red-500"}`} />
       {active ? "Active" : "Inactive"}
     </span>
   );

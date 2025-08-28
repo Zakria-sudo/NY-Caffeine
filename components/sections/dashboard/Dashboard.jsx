@@ -197,13 +197,13 @@ export default function Dashboard() {
                   </div>
                   <div className="flex items-center gap-5">
                     <button aria-label="Delete" className="active:scale-95">
-                      <Image src="/trash.png" alt="" width={20} height={20} />
+                      <Image src="/trash.png" alt="loading" width={20} height={20} />
                     </button>
                     <button aria-label="View" className="active:scale-95">
-                      <Image src="/eye.png" alt="" width={20} height={20} />
+                      <Image src="/eye.png" alt="loading" width={20} height={20} />
                     </button>
                     <button aria-label="Share" className="active:scale-95">
-                      <Image src="/share.png" alt="" width={20} height={20} />
+                      <Image src="/share.png" alt="loading" width={20} height={20} />
                     </button>
                   </div>
                 </div>
@@ -264,7 +264,7 @@ export default function Dashboard() {
                           >
                             <Image
                               src="/trash.png"
-                              alt=""
+                              alt="loading"
                               width={18}
                               height={18}
                             />
@@ -272,7 +272,7 @@ export default function Dashboard() {
                           <button aria-label="View" className="active:scale-95">
                             <Image
                               src="/eye.png"
-                              alt=""
+                              alt="loading"
                               width={18}
                               height={18}
                             />
@@ -283,7 +283,7 @@ export default function Dashboard() {
                           >
                             <Image
                               src="/share.png"
-                              alt=""
+                              alt="loading"
                               width={18}
                               height={18}
                             />

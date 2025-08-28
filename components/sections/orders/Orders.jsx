@@ -171,7 +171,7 @@ export default function Orders() {
                     setStatusFilter(e.target.value);
                     setPage(1);
                   }}
-                  className="h-9 appearance-none rounded-md border border-neutral-200 bg-white px-3 pr-8 text-sm text-neutral-700 outline-none"
+                  className="h-9 appearance-none rounded-md border border-neutral-200 bg-white px-2 text-sm text-neutral-700 outline-none"
                 >
                   <option value="">Status</option>
                   <option value="pending">Pending</option>

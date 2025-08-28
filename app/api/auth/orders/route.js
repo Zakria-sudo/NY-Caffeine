@@ -1,19 +1,22 @@
-// /app/api/auth/login/route.js
+// app/api/auth/orders/route.js
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET() {
-  const cookieStore = cookies();
-  const authCookie = cookieStore.get("auth"); // { name, value } or undefined
+export const dynamic = "force-dynamic"; // ← important
 
-  const r = await fetch(process.env.NEXT_PUBLIC_API_URL + "/orders", {
+export async function GET() {
+  const auth = cookies().get("auth")?.value;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/orders`;
+
+  const r = await fetch(url, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      ...(authCookie?.value ? { Authorization: `Bearer ${authCookie.value}`} : {}),
+      ...(auth ? { Authorization: `Bearer ${auth}` } : {}),
     },
+    cache: "no-store", // ← avoid 304 from upstream
   });
 
-  const data = await r.json();
-  return NextResponse.json(data);
+  const data = await r.json().catch(() => ({}));
+  return NextResponse.json(data, { status: r.status });
 }

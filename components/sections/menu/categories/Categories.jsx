@@ -5,10 +5,9 @@ import FilterButton from "@/components/filterbutton/FilterButton";
 import { searchBtn, pen, trash } from "@/lib/links/linkicons";
 import { DialogDemo } from "@/components/dialogShadcn/Dialog";
 import TablePagination from "../tables/TablePagination";
-import { SkeletonTable, TableSkeleton } from "@/components/dialogShadcn/TableSkeleton";        // tbody skeleton
-import { SkeletonPagination } from "@/components/dialogShadcn/SkeletonPagination"; // pager skeleton
+import { SkeletonTable } from "@/components/dialogShadcn/TableSkeleton";
+import { SkeletonPagination } from "@/components/dialogShadcn/SkeletonPagination";
 import api from "@/utils/axios";
-import { TableCell } from "@/components/ui/table";
 
 const PAGE_SIZE = 6;
 
@@ -16,11 +15,10 @@ export default function Categories() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
 
-  const [data, setData] = useState([]);     // API categories
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
-  // Fetch categories
   useEffect(() => {
     (async () => {
       try {
@@ -37,7 +35,6 @@ export default function Categories() {
     })();
   }, []);
 
-  // Filter (by id or name)
   const q = query.trim().toLowerCase();
   let filtered = data;
   if (q) {
@@ -48,35 +45,35 @@ export default function Categories() {
     });
   }
 
-  // Pagination
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pageSafe = Math.min(page, totalPages);
   const start = (pageSafe - 1) * PAGE_SIZE;
   const pageRows = filtered.slice(start, start + PAGE_SIZE);
 
-  // Reset to page 1 when the query changes
   useEffect(() => setPage(1), [query]);
 
   return (
     <section className="p-3 md:p-6">
       <div className="rounded-xl border border-gray-200 bg-white p-3 md:p-6">
         {/* Header */}
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex flex-col gap-3 md:mb-5 md:flex-row md:items-center md:justify-between">
           <h2 className="text-[20px] md:text-[22px] font-semibold text-[#111827]">
             All Categories
           </h2>
-          <DialogDemo />
+          <div className="w-full md:w-auto flex md:justify-end">
+            <DialogDemo />
+          </div>
         </div>
 
         {/* Controls */}
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-2">
             <FilterButton label="By Date" />
             <FilterButton label="By Status" />
           </div>
 
           {/* Search */}
-          <label className="relative h-10 w-full max-w-[280px]">
+          <label className="relative h-10 w-full md:w-[280px]">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
               {searchBtn}
             </span>
@@ -96,8 +93,7 @@ export default function Categories() {
         {/* Table */}
         <div className="rounded-xl border border-gray-200">
           <div className="overflow-x-auto rounded-xl">
-            <table className="w-full table-fixed text-sm">
-              {/* widths: ID 10rem, Name 40rem, Qty 6rem, Actions 6rem */}
+            <table className="w-full min-w-[720px] md:min-w-0 table-auto text-sm">
               <colgroup>
                 <col className="w-40" />
                 <col />
@@ -114,10 +110,9 @@ export default function Categories() {
                 </tr>
               </thead>
 
-              {/* Body */}
               {loading ? (
                 <tbody>
-                <SkeletonTable/>
+                  <SkeletonTable />
                 </tbody>
               ) : (
                 <tbody>
@@ -130,11 +125,9 @@ export default function Categories() {
                   ) : (
                     pageRows.map((c) => (
                       <tr key={c._id} className="border-t border-gray-200">
-                        <Td className="py-5 text-gray-700"> {"#"+ c._id.slice(-4)}</Td>
+                        <Td className="py-5 text-gray-700">{"#" + c._id.slice(-4)}</Td>
                         <Td className="py-5 text-[#111827]">
-                          <span className="block max-w-full truncate">
-                            {c.name || "-"}
-                          </span>
+                          <span className="block truncate">{c.name || "-"}</span>
                         </Td>
                         <Td className="py-5 text-center text-gray-700">
                           {Array.isArray(c.items) ? c.items.length : 0}
