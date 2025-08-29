@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { downArrow, leftArrow, rightArrow } from "@/lib/links/linkicons";
+import { downArrow} from "@/lib/links/linkicons";
 import { Tag } from "@/components/tag/Tag";
 import { headers } from "@/lib/static-data/orders-data";
-import api, { apiWithAuth } from "@/utils/axios";
 import { SkeletonTable } from "@/components/dialogShadcn/TableSkeleton";
 import TablePagination from "../menu/tables/TablePagination";
 
@@ -51,9 +50,8 @@ export default function Orders() {
         });
 
         if (!res.ok) throw new Error("Failed to fetch orders");
-
         const data = await res.json();
-        // data = { success, message, orders: [...] }
+
         setOrders(Array.isArray(data?.orders) ? data.orders : []);
       } catch (e) {
         setLoadError(e?.message || "failed to load orders");
@@ -327,7 +325,7 @@ export default function Orders() {
 
           {/* Pagination footer to match screenshot */}
           <div className="border-t border-neutral-200">
-            <TablePagination />
+            <TablePagination page={1} totalPages={4} />
           </div>
         </div>
 
